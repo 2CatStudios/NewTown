@@ -38,7 +38,7 @@ public GameObject player;
 			if((transform.position - wayPoint).magnitude <= 0.1F)
 			{
 				StartCoroutine(Delay());
-				child.animation.CrossFade("Wait", 0.3F);
+//				child.animation.CrossFade("Wait", 0.3F);
 				canMove = false;
 			}
 		}
@@ -87,7 +87,7 @@ public GameObject player;
 		
 		chatting = true;
 		canMove = false;
-		child.animation.CrossFade("Wait");
+//		child.animation.CrossFade("Wait");
 		transform.LookAt(player.transform);
 	}
 	
@@ -97,7 +97,7 @@ public GameObject player;
 		chatting = false;
 		canMove = true;
 		Wander ();
-		child.animation.CrossFade("Walk");
+//		child.animation.CrossFade("Walk");
 		Wander();
 	}
 }
