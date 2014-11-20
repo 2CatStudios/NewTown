@@ -4,15 +4,46 @@ using System.Collections;
 using System.Collections.Generic;
 //Written by Michael Bethke
 public class World
-{
+{		
 	
-	int mapSize;
-	List<WorldTile> worldTiles = new List<WorldTile> ();
+	internal GameObject parent;
+	internal WorldTile[,] worldTiles;
 	
-	public int Length
+	
+	internal void Initialize ( GameObject thisParent, int worldWidth, int worldDepth )
 	{
 		
-		get { return worldTiles.Count; }
+		parent = thisParent;
+		worldTiles = new WorldTile[worldWidth, worldDepth];
+
+		int widthIndex = 0;
+		int depthIndex = 0;
+
+		while ( depthIndex < worldTiles.GetLength ( 1 ))
+		{
+			
+			while ( depthIndex < worldDepth )
+			{
+				
+				while ( widthIndex < worldWidth )
+				{
+					
+					UnityEngine.Debug.Log ( "Create " + widthIndex + " + " + depthIndex );
+					
+					WorldTile newTile = new WorldTile ();
+					newTile.Initialize ( this, widthIndex, depthIndex );
+					
+					worldTiles[widthIndex, depthIndex] = newTile;
+					
+					widthIndex += 1;
+				}
+				
+				widthIndex = 0;
+				depthIndex += 1;
+			}
+			
+			UnityEngine.Debug.Log ( widthIndex * depthIndex );
+		}
 	}
 }
 
@@ -20,48 +51,32 @@ public class World
 class WorldTile
 {
 	
+	bool initialized = false;
+	GameObject plane;
 	
+	internal void Initialize ( World thisWorld, int x, int y )
+	{
+		
+		GameObject newPlane = GameObject.CreatePrimitive ( PrimitiveType.Plane );
+		newPlane.transform.position = new Vector3 ( x * 10, 1, y * 10 );
+		newPlane.transform.parent = thisWorld.parent.transform;
+		plane = newPlane;
+		
+	}
 }
 
 
 public class GenerateTerrain : MonoBehaviour
 {
-	
-	int squareMapSize = 10;
 
+	public int worldWidth = 6;
+	public int worldDepth = 4;
+	
 	internal World world = new World ();
 
 	void Start ()
 	{
 		
-		bool worldCreated = GenerateWorld ();
-		
-		if ( worldCreated == true )
-		{
-			
-			UnityEngine.Debug.Log ( "No errors in world creation." );
-		} else {
-			
-			UnityEngine.Debug.Log ( "Unable to create world!" );
-		}
-	}
-	
-	
-	bool GenerateWorld ()
-	{
-		
-		try
-		{
-			
-			int value = 1 / int.Parse("0");
-			UnityEngine.Debug.Log ( "Something went wrong at line 56." );
-		} catch ( Exception e )
-		{
-			
-			UnityEngine.Debug.LogError ( e );
-			return false;
-		}
-		
-		return true;
+		world.Initialize ( this.gameObject, worldWidth, worldDepth );
 	}
 }
