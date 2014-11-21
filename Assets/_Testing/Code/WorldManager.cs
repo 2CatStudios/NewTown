@@ -28,7 +28,7 @@ public class World
 				while ( widthIndex < worldWidth )
 				{
 					
-					UnityEngine.Debug.Log ( "Create " + widthIndex + " + " + depthIndex );
+					//UnityEngine.Debug.Log ( "Create " + widthIndex + " + " + depthIndex );
 					
 					WorldTile newTile = new WorldTile ();
 					newTile.Initialize ( this, widthIndex, depthIndex );
@@ -41,8 +41,6 @@ public class World
 				widthIndex = 0;
 				depthIndex += 1;
 			}
-			
-			UnityEngine.Debug.Log ( widthIndex * depthIndex );
 		}
 	}
 }
@@ -66,7 +64,7 @@ class WorldTile
 }
 
 
-public class GenerateTerrain : MonoBehaviour
+public class WorldManager : MonoBehaviour
 {
 
 	public int worldWidth = 6;
@@ -75,6 +73,13 @@ public class GenerateTerrain : MonoBehaviour
 	internal World world = new World ();
 
 	void Start ()
+	{
+		
+		GenerateTerrain ();
+	}
+	
+	
+	void GenerateTerrain ()
 	{
 		
 		world.Initialize ( this.gameObject, worldWidth, worldDepth );

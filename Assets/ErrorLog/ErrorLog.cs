@@ -51,7 +51,7 @@ public class ErrorLog : MonoBehaviour
 				userInterface.enabled = false;
 			}
 			
-			log.Add ( "Error Log Active" );
+			log.Add ( "Error Log Active\n" );
 			
 			if ( writeLogToDisk == true )
 			{
@@ -105,7 +105,7 @@ public class ErrorLog : MonoBehaviour
 		
 		UnityEngine.Debug.Log ( "MESSAGE" );
 		
-		if ( AddMessage ( logString + " (" + type + ") " + stackTrace + "\n" ) == false )
+		if ( AddMessage ( logString + " (" + type + ") " + stackTrace ) == false )
 		{
 			
 			UnityEngine.Debug.LogError ( "Unable to AddMessage from CallBack, " + logString );
