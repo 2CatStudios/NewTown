@@ -7,8 +7,23 @@ using System.Xml.Serialization;
 public class Preferences
 {
 
-	[XmlElement ( "Version" )]
-	public string version;
+	[XmlElement ( "LastPlayerID" )]
+	public string lastPlayerID;
+}
+
+
+[XmlRoot ( "SavedGame" )]
+public class SavedGame
+{
+	
+	[XmlElement ( "PlayerID" )]
+	public string playerID;
+	
+	[XmlElement ( "LastSeen" )]
+	public string lastSeen;
+	
+	[XmlElement ( "DateModifier" )]
+	public string dateModifier;
 }
 
 
