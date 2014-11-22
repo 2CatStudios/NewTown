@@ -13,6 +13,7 @@ public class ExternalInformation : MonoBehaviour
 	string twoCatStudiosPath;
 	internal string newTownPath;
 	internal string supportPath;
+	internal string savedGamesPath;
 	
 
 	void Start ()
@@ -32,39 +33,19 @@ public class ExternalInformation : MonoBehaviour
 		
 		newTownPath = twoCatStudiosPath + "NewTown" + Path.DirectorySeparatorChar;
 		supportPath = newTownPath + Path.DirectorySeparatorChar + "Support" + Path.DirectorySeparatorChar;
-		
+		savedGamesPath = newTownPath + Path.DirectorySeparatorChar + "Saved Games" + Path.DirectorySeparatorChar;
+
+#region support
 		if ( Directory.Exists ( supportPath ) == false )
 		{
 			
 			Directory.CreateDirectory ( supportPath );
 		}
 		
-		
-/*		if ( ReadPreferences () == true )
-		{
-		
-			if ( WritePreferences () == true )
-			{
-				
-				UnityEngine.Debug.Log ( "Preferences Loaded Successfully" );
-			} else {
-				
-				UnityEngine.Debug.Log ( "Unable to Write Preferences, Read Successful" );
-			}
-		} else {
-			
-			if ( WritePreferences () != true )
-			{
-				
-				UnityEngine.Debug.LogError ( "Unable to Write Preferences, Read Fail" );
-			}
-		}*/
-		
-		
 		if ( ReadPreferences () != true )
 		{
 			
-			if ( WritePreferences () != true )
+			if ( WritePreferences ( true ) != true )
 			{
 				
 				UnityEngine.Debug.Log ( "Unable to Write Preferences!" );
@@ -77,6 +58,32 @@ public class ExternalInformation : MonoBehaviour
 				} else { UnityEngine.Debug.Log ( "New Preferences File Created" ); }
 			}
 		} else { UnityEngine.Debug.Log ( "Read Preferences Successfully" ); }
+#endregion
+#region savedGames
+		if ( Directory.Exists ( savedGamesPath ) == false )
+		{
+			
+			Directory.CreateDirectory ( savedGamesPath );
+		}
+		
+		if ( ReadSavedGames () != true )
+		{
+			
+			if ( WriteSavedGames ( true ) != true )
+			{
+				
+				UnityEngine.Debug.Log ( "Unable to Write SavedGames!" );
+			} else {
+				
+				if ( ReadSavedGames () != true )
+				{
+					
+					UnityEngine.Debug.LogError ( "Unable to R+WR SavedGames" );
+				} else { UnityEngine.Debug.Log ( "New SavedGames File Created" ); }
+			}
+		} else { UnityEngine.Debug.Log ( "Read SavedGames Successfully" ); }
+#endregion
+		
 	}
 	
 	
@@ -90,6 +97,12 @@ public class ExternalInformation : MonoBehaviour
 			prefsReader.Close();
 			
 			informationManager.preferences = prefsXML.DeserializeXml<Preferences> ();
+			
+			if ( informationManager.PrefsUpToDate () != true )
+			{
+				
+				return false;
+			}
 		} catch ( Exception error )
 		{
 			
@@ -100,8 +113,19 @@ public class ExternalInformation : MonoBehaviour
 	}
 	
 	
-	bool WritePreferences ()
+	bool WritePreferences ( bool rewrite = false )
 	{
+		
+		if ( rewrite == true )
+		{
+			
+			UnityEngine.Debug.Log ( "Rewriting Preferences" );
+			if ( informationManager.NewPreferences () != true )
+			{
+				
+				return false;
+			}
+		}
 		
 		try {
 			
@@ -112,6 +136,55 @@ public class ExternalInformation : MonoBehaviour
 		} catch ( Exception error ) {
 			
 			UnityEngine.Debug.LogError ( "Unable to Write Preferences, " + error );
+			return false;
+		}
+		return true;
+	}
+
+
+	bool ReadSavedGames ()
+	{
+	
+		try {
+			
+			StreamReader savesReader = new System.IO.StreamReader ( savedGamesPath + "SavedGames.xml" );
+			string savesXML = savesReader.ReadToEnd();
+			savesReader.Close();
+			
+			informationManager.savedGames = savesXML.DeserializeXml<SavedGames> ();
+		} catch ( Exception error )
+		{
+			
+			UnityEngine.Debug.LogWarning ( "Unable to Read SavedGames, " + error );
+			return false;
+		}
+		return true;
+	}
+	
+	
+	bool WriteSavedGames ( bool rewrite = false )
+	{
+		
+		if ( rewrite == true )
+		{
+			
+			UnityEngine.Debug.Log ( "Rewriting SavedGames" );
+			if ( informationManager.NewSavedGames () != true )
+			{
+				
+				return false;
+			}
+		}
+		
+		try {
+			
+			XmlSerializer savedGamesSerializer = new XmlSerializer ( informationManager.savedGames.GetType ());
+			StreamWriter savedGamesWriter = new StreamWriter ( savedGamesPath + "SavedGames.xml" );
+			savedGamesSerializer.Serialize ( savedGamesWriter.BaseStream, informationManager.savedGames );
+			savedGamesWriter.Close ();
+		} catch ( Exception error ) {
+			
+			UnityEngine.Debug.LogError ( "Unable to Write SavedGames, " + error );
 			return false;
 		}
 		return true;

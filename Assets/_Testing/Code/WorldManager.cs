@@ -58,6 +58,7 @@ class WorldTile
 		GameObject newPlane = GameObject.CreatePrimitive ( PrimitiveType.Plane );
 		newPlane.transform.position = new Vector3 ( x * 10, 1, y * 10 );
 		newPlane.transform.parent = thisWorld.parent.transform;
+		newPlane.renderer.material = thisWorld.parent.GetComponent<WorldManager>().seasons[3];
 		plane = newPlane;
 		
 	}
@@ -69,6 +70,8 @@ public class WorldManager : MonoBehaviour
 
 	public int worldWidth = 6;
 	public int worldDepth = 4;
+	
+	public Material[] seasons = new Material[4];
 	
 	internal World world = new World ();
 

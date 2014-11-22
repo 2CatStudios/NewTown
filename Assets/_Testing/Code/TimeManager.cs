@@ -7,14 +7,11 @@ public class TimeManager : MonoBehaviour
 	internal int season ()
 	{
 		
-		
+		return 3;
 		
 		return 0;
 	}
-	
-	
-	
-	
+
 
 	void Start ()
 	{
