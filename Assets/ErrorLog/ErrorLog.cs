@@ -51,7 +51,7 @@ public class ErrorLog : MonoBehaviour
 				userInterface.enabled = false;
 			}
 			
-			log.Add ( "Error Log Active\n" );
+			//log.Add ( "Error Log Active\n" );
 			
 			if ( writeLogToDisk == true )
 			{

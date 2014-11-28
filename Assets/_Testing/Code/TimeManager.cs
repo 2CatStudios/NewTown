@@ -4,18 +4,11 @@ using System.Collections;
 public class TimeManager : MonoBehaviour
 {
 	
-	internal int season ()
+	internal int currentSeason ()
 	{
 		
 		return 3;
 		
-		return 0;
-	}
-
-
-	void Start ()
-	{
-	
-		
+	//	return 0;
 	}
 }

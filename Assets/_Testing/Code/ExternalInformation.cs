@@ -57,7 +57,7 @@ public class ExternalInformation : MonoBehaviour
 					UnityEngine.Debug.LogError ( "Unable to R+WR Preferences" );
 				} else { UnityEngine.Debug.Log ( "New Preferences File Created" ); }
 			}
-		} else { UnityEngine.Debug.Log ( "Read Preferences Successfully" ); }
+		}// else { UnityEngine.Debug.Log ( "Read Preferences Successfully" ); }
 #endregion
 #region savedGames
 		if ( Directory.Exists ( savedGamesPath ) == false )
@@ -81,7 +81,7 @@ public class ExternalInformation : MonoBehaviour
 					UnityEngine.Debug.LogError ( "Unable to R+WR SavedGames" );
 				} else { UnityEngine.Debug.Log ( "New SavedGames File Created" ); }
 			}
-		} else { UnityEngine.Debug.Log ( "Read SavedGames Successfully" ); }
+		}// else { UnityEngine.Debug.Log ( "Read SavedGames Successfully" ); }
 #endregion
 		
 	}
