@@ -4,12 +4,16 @@ using System.Collections;
 public class UserInterface : MonoBehaviour
 {
 	
+	WorldManager worldManager;
+	
 	GUIStyle styleEmpty;
 	GUIStyle styleLabelCenterLarge;
 	
 	
 	void Start ()
 	{
+		
+		worldManager = GameObject.FindGameObjectWithTag ( "World" ).GetComponent<WorldManager> ();
 		
 		styleEmpty = new GUIStyle ();
 		styleEmpty.fontSize = 48;
@@ -39,9 +43,17 @@ public class UserInterface : MonoBehaviour
 		GUILayout.BeginVertical ();
 		//GUILayout.FlexibleSpace ();
 		
-		GUILayout.Label ( "NewTown", styleLabelCenterLarge );
+		//GUILayout.Label ( "NewTown", styleLabelCenterLarge );
 		
-		//GUILayout.FlexibleSpace ();
+		GUILayout.FlexibleSpace ();
+		
+		if ( GUILayout.Button ( "Generate Terrain" ))
+		{
+			
+			worldManager.GenerateTerrain ();
+		}
+		
+		GUILayout.FlexibleSpace ();
 		GUILayout.EndVertical ();
 		
 		GUILayout.FlexibleSpace ();

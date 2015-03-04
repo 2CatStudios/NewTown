@@ -10,71 +10,78 @@ public class World
 	internal WorldTile[,] worldTiles;
 	internal int season;
 	
+	public static World world = new World ();
 	
-	internal void Initialize ( GameObject thisParent, int worldWidth, int worldDepth )
+	internal void Initialize ( GameObject thisParent, int worldWidth, int worldHeight )
 	{
 		
 		parent = thisParent;
-		worldTiles = new WorldTile[worldWidth, worldDepth];
+		worldTiles = new WorldTile[worldWidth, worldHeight];
 		season = GameObject.FindGameObjectWithTag ( "Manager" ).GetComponent<TimeManager>().currentSeason ();
-		Texture2D heightmap = CalcNoise ( worldWidth, worldDepth );
+		Color[,] heightmap = GeneratePerlinNoise ( 1.0f, 1.0f, worldWidth, worldHeight );
 
 		int widthIndex = 0;
-		int depthIndex = 0;
+		int heightIndex = 0;
 
-		while ( depthIndex < worldTiles.GetLength ( 1 ))
+		while ( heightIndex < worldTiles.GetLength ( 1 ))
 		{
 			
-			while ( depthIndex < worldDepth )
+			while ( heightIndex < worldHeight )
 			{
 				
 				while ( widthIndex < worldWidth )
 				{
 					
-					float heightIndex = heightmap.GetPixel( widthIndex, depthIndex ).grayscale;
+					float localHeight = 0;
+					if ( heightmap[ widthIndex, heightIndex ].grayscale > 0.5f )
+					{
+						
+						localHeight = 5;
+					}
 					
 					WorldTile newTile = new WorldTile ();
-					newTile.Initialize ( this, widthIndex, heightIndex, depthIndex);
+					newTile.Initialize ( this, widthIndex, localHeight, heightIndex);
 					
-					worldTiles[widthIndex, depthIndex] = newTile;
+					worldTiles[widthIndex, heightIndex] = newTile;
 					
 					widthIndex += 1;
 				}
 				
 				widthIndex = 0;
-				depthIndex += 1;
+				heightIndex += 1;
 			}
 		}
 	}
-	
-	
-	Texture2D CalcNoise ( int width, int depth )
+
+
+	private Color[,] GeneratePerlinNoise ( float xSeed, float ySeed, int perlinWidth, int perlinHeight )
 	{
 		
-		Texture2D texture = new Texture2D ( width, depth );
-		Color[] pix = new Color [width * depth];
+		Color[,] pixels = new Color [ perlinWidth, perlinHeight ];
 		
-		int y = 0;
-		while ( y < depth )
+		float scale = 2.0f;
+
+		float y = 0;
+		while ( y < perlinHeight )
 		{
 			
-			int x = 0;
-			while ( x < width )
+			float x = 0;
+			while ( x < perlinWidth )
 			{
 				
-				float sample = Mathf.PerlinNoise ( x, y );
-				UnityEngine.Debug.Log ( "X:" + x + "Y:" + y + "=" + sample );
-				pix [y * width + x] = new Color ( sample, sample, sample );
-				x++;
+		    	float xCoordinate = xSeed + x / perlinWidth * scale;
+		    	float yCoordinate = ySeed + y / perlinHeight * scale;
+		    	float sample = Mathf.PerlinNoise ( xCoordinate, yCoordinate );
+				
+				pixels [Convert.ToInt32 ( x ), Convert.ToInt32 ( y )] = new Color ( sample, sample, sample, 1 );
+				
+				x += 1;
 			}
 			
-			y++;
+			y += 1;
 		}
 		
-		texture.SetPixels ( pix );
-		texture.Apply ();
-		
-		return texture;
+		return pixels;
 	}
 }
 
@@ -83,7 +90,7 @@ class WorldTile
 {
 	
 	//bool initialized = false;
-	GameObject self;
+	//GameObject tileObject;
 	
 	internal void Initialize ( World thisWorld, int x, float y, int z )
 	{
@@ -92,8 +99,7 @@ class WorldTile
 		newPlane.transform.position = new Vector3 ( x * 10, y, z * 10 );
 		newPlane.transform.parent = thisWorld.parent.transform;
 		newPlane.renderer.material = thisWorld.parent.GetComponent<WorldManager>().seasons[thisWorld.season];
-		self = newPlane;
-		
+		//tileObject = newPlane;
 	}
 }
 
@@ -101,23 +107,15 @@ class WorldTile
 public class WorldManager : MonoBehaviour
 {
 	
-	public int worldWidth = 6;
+	public int worldWidth = 4;
 	public int worldDepth = 4;
 	
 	public Material[] seasons = new Material[4];
 	
-	internal World world = new World ();
-
-	void Start ()
+	
+	internal void GenerateTerrain ()
 	{
 		
-		//GenerateTerrain ();
-	}
-	
-	
-	void GenerateTerrain ()
-	{
-		
-		world.Initialize ( this.gameObject, worldWidth, worldDepth );
+		World.world.Initialize ( this.gameObject, worldWidth, worldDepth );
 	}
 }
